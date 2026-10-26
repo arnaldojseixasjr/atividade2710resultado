@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BancoAcessível - Abra sua Conta Digital (Versão Acessível)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:        '#111827',
+          graphite:   '#1F2937',
+          softbg:     '#F9FAFB',
+          focusring:  '#0047FF', // azul elétrico de alto contraste
+          success:    '#15803D',
+          danger:     '#B91C1C',
+          dangerbg:   '#FEF2F2',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  /* ============================================================
+     GABARITO OFICIAL — BancoAcessível Acessível (WCAG AA/AAA)
+     Estudo de caso para Audit Inclusivo (versão corrigida)
+     ============================================================ */
+
+  :root {
+    --color-ink: #111827;
+    --color-graphite: #1F2937;
+    --color-softbg: #F9FAFB;
+    --color-focus: #0047FF;
+    --color-success: #15803D;
+    --color-danger: #B91C1C;
+    --color-danger-bg: #FEF2F2;
+  }
+
+  html { font-size: 16px; }
+  body { font-size: 1rem; line-height: 1.6; }
+
+  /* Tipografia base legível (mínimo 16px corpo, 14px auxiliar) */
+  .text-body    { font-size: 1rem;   line-height: 1.6; } /* 16px */
+  .text-aux     { font-size: 0.875rem; line-height: 1.5; } /* 14px */
+  .text-help    { font-size: 0.875rem; line-height: 1.5; color: #4B5563; } /* 14px, cinza médio com contraste > 7:1 */
+  .text-error   { font-size: 0.875rem; line-height: 1.5; color: #B91C1C; font-weight: 600; }
+
+  /* Foco visível de alto contraste (WCAG 2.4.7) — outline destacado em azul elétrico */
+  *:focus,
+  *:focus-visible {
+    outline: 3px solid var(--color-focus) !important;
+    outline-offset: 2px !important;
+    border-radius: 6px;
+  }
+
+  /* Remove foco padrão apenas para mouse, mantém para teclado */
+  button:focus:not(:focus-visible),
+  a:focus:not(:focus-visible),
+  select:focus:not(:focus-visible),
+  input:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Área de toque mínima de 48px em todos os controles interativos (WCAG 2.5.5) */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Botão primário com 52px de altura */
+  .btn-primary {
+    min-height: 52px;
+    background-color: #1D4ED8;
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: background-color 0.15s ease;
+  }
+  .btn-primary:hover { background-color: #1E40AF; }
+  .btn-primary:active { background-color: #1E3A8A; }
+
+  /* Botão secundário (VOLTAR) — claro, sem dark pattern */
+  .btn-secondary {
+    min-height: 52px;
+    background-color: #FFFFFF;
+    color: #1F2937;
+    border: 2px solid #D1D5DB;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #F3F4F6;
+    border-color: #9CA3AF;
+  }
+
+  /* Campo de formulário acessível */
+  .field-input {
+    min-height: 48px;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    color: #111827;
+    background-color: #FFFFFF;
+    border: 2px solid #9CA3AF;
+    border-radius: 0.5rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field-input:hover { border-color: #6B7280; }
+  .field-input:focus {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+    border-color: var(--color-focus);
+  }
+  .field-input::placeholder { color: #6B7280; }
+
+  /* Estado de erro: triplo indicador (Borda + Ícone + Mensagem) */
+  .field-input.is-invalid {
+    border-color: #B91C1C;
+    background-color: #FEF2F2;
+  }
+  .field-input.is-valid {
+    border-color: #15803D;
+  }
+
+  /* Label sempre visível e com alto contraste */
+  .field-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    display: inline-block;
+    margin-bottom: 0.375rem;
+  }
+  .required-mark {
+    color: #B91C1C;
+    font-weight: 700;
+  }
+
+  /* Checkbox grande 24x24 com área de toque ampliada */
+  .checkbox-large {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    cursor: pointer;
+    accent-color: #1D4ED8;
+  }
+
+  /* Barra de progresso acessível */
+  .progress-bar {
+    height: 12px;
+    background-color: #E5E7EB;
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  .progress-bar > div {
+    height: 100%;
+    background-color: #1D4ED8;
+    transition: width 0.4s ease;
+  }
+
+  /* Mensagem de erro com aria-live */
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 0.375rem;
+    color: #B91C1C;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+  .error-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* Esconde visualmente mas mantém acessível a leitores de tela (sr-only) */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* "Skip link" — pular para o conteúdo principal (WCAG 2.4.1) */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: #1D4ED8;
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 0 0 0.5rem 0;
+  }
+  .skip-link:focus {
+    left: 0;
+    top: 0;
+    outline: 3px solid #FFD60A;
+    outline-offset: 2px;
+  }
+
+  /* Animação reduzida respeitando prefers-reduced-motion (WCAG 2.3.3) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Layout: celular simulado mas responsivo em telas maiores */
+  .app-shell {
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: var(--color-softbg);
+    min-height: 100vh;
+  }
+
+  /* Oculta etapas não ativas sem perder do DOM */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  /* Banner de sucesso acessível (sem piscar) */
+  .success-banner {
+    background-color: #DCFCE7;
+    border: 2px solid #15803D;
+    color: #14532D;
+  }
+</style>
+</head>
+<body class="bg-softbg text-ink font-sans antialiased">
+
+  <!-- Skip link — acessibilidade de teclado (WCAG 2.4.1) -->
+  <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo principal</a>
+
+  <div class="app-shell">
+
+    <!-- ============================================================
+         Cabeçalho semântico
+         ============================================================ -->
+    <header role="banner" class="bg-white px-5 pt-6 pb-4 border-b border-gray-200">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 bg-blue-700 rounded-xl flex items-center justify-center shadow-md"
+             aria-hidden="true">
+          <span class="text-white font-bold text-lg">B</span>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-ink leading-tight">BancoAcessível</h1>
+          <p class="text-aux text-graphite">Conta digital simples e acessível</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         Conteúdo principal semântico
+         ============================================================ -->
+    <main id="conteudo-principal" role="main" class="px-5 py-6">
+
+      <!-- Barra de progresso acessível -->
+      <section aria-labelledby="progresso-titulo" class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <h2 id="progresso-titulo" class="text-aux font-semibold text-graphite">
+            Etapa <span id="stepNumber" aria-live="polite">1</span> de 3
+          </h2>
+          <span class="text-aux font-semibold text-graphite" id="stepLabel">
+            Dados pessoais
+          </span>
+        </div>
+        <div class="progress-bar"
+             role="progressbar"
+             aria-valuemin="1"
+             aria-valuemax="3"
+             aria-valuenow="1"
+             aria-label="Progresso do cadastro">
+          <div id="progressFill" style="width: 33%"></div>
+        </div>
+        <ol class="mt-3 flex justify-between text-aux text-graphite">
+          <li id="dot-1" class="font-semibold text-blue-700">1. Dados pessoais</li>
+          <li id="dot-2" class="text-gray-400">2. Contato</li>
+          <li id="dot-3" class="text-gray-400">3. Revisão</li>
+        </ol>
+      </section>
+
+      <!-- ============================================================
+           Etapa 1 — Dados Pessoais
+           ============================================================ -->
+      <section id="step-1"
+               class="step-panel active"
+               aria-labelledby="titulo-step-1">
+        <h2 id="titulo-step-1" class="text-lg font-bold text-ink mb-1">
+          Dados pessoais
+        </h2>
+        <p class="text-aux text-graphite mb-5">
+          Precisamos de algumas informações básicas para abrir sua conta. Leva menos de 2 minutos.
+        </p>
+
+        <form id="form-step-1" novalidate class="space-y-5">
+
+          <!-- Nome completo -->
+          <div>
+            <label for="nome" class="field-label">
+              Nome completo <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="nome"
+                   name="nome"
+                   required
+                   autocomplete="name"
+                   aria-required="true"
+                   aria-describedby="nome-ajuda"
+                   class="field-input"
+                   placeholder="Ex: Maria Silva Santos">
+            <p id="nome-ajuda" class="text-help mt-1">
+              Informe seu nome civil completo, exatamente como aparece no documento.
+            </p>
+            <div id="nome-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, informe seu nome completo.</span>
+            </div>
+          </div>
+
+          <!-- CPF — validação com triplo indicador -->
+          <div>
+            <label for="cpf" class="field-label">
+              CPF <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="cpf"
+                   name="cpf"
+                   required
+                   inputmode="numeric"
+                   maxlength="14"
+                   autocomplete="off"
+                   aria-required="true"
+                   aria-describedby="cpf-ajuda cpf-erro"
+                   aria-invalid="false"
+                   class="field-input"
+                   placeholder="000.000.000-00"
+                   oninput="mascaraCpf(this)">
+            <p id="cpf-ajuda" class="text-help mt-1">
+              Digite apenas os 11 números do seu CPF.
+            </p>
+            <div id="cpf-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>⚠️ Digite um CPF válido com 11 números no formato 000.000.000-00.</span>
+            </div>
+          </div>
+
+          <!-- RG -->
+          <div>
+            <label for="rg" class="field-label">
+              RG <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="rg"
+                   name="rg"
+                   required
+                   autocomplete="off"
+                   aria-required="true"
+                   aria-describedby="rg-ajuda"
+                   class="field-input"
+                   placeholder="00.000.000-0">
+            <p id="rg-ajuda" class="text-help mt-1">
+              Documento de identidade emitido por órgão competente.
+            </p>
+            <div id="rg-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, informe seu RG.</span>
+            </div>
+          </div>
+
+          <!-- Nome da mãe -->
+          <div>
+            <label for="mae" class="field-label">
+              Nome completo da mãe <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="mae"
+                   name="mae"
+                   required
+                   autocomplete="off"
+                   aria-required="true"
+                   aria-describedby="mae-ajuda"
+                   class="field-input"
+                   placeholder="Ex: Ana Silva Santos">
+            <p id="mae-ajuda" class="text-help mt-1">
+              Usado para validação de segurança da sua conta.
+            </p>
+            <div id="mae-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, informe o nome completo da sua mãe.</span>
+            </div>
+          </div>
+
+          <!-- Renda mensal -->
+          <div>
+            <label for="renda" class="field-label">
+              Renda mensal declarada (R$) <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="number"
+                   id="renda"
+                   name="renda"
+                   required
+                   min="0"
+                   step="0.01"
+                   inputmode="decimal"
+                   aria-required="true"
+                   aria-describedby="renda-ajuda"
+                   class="field-input"
+                   placeholder="0,00">
+            <p id="renda-ajuda" class="text-help mt-1">
+              Informe sua renda média mensal. Não há cobrança de tarifa para análise de cadastro.
+            </p>
+            <div id="renda-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, informe um valor de renda válido (ex: 2500.00).</span>
+            </div>
+          </div>
+
+          <!-- Botões: VOLTAR (secundário) + CONTINUAR (primário) -->
+          <div class="flex gap-3 pt-2">
+            <button type="button"
+                    class="btn-secondary flex-1 touch-target"
+                    onclick="window.location.href='BancoAcessivel-cadastro.html'"
+                    aria-label="Cancelar cadastro e voltar ao início">
+              CANCELAR
+            </button>
+            <button type="submit"
+                    class="btn-primary flex-1 touch-target"
+                    form="form-step-1">
+              CONTINUAR CADASTRO
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============================================================
+           Etapa 2 — Contato
+           ============================================================ -->
+      <section id="step-2"
+               class="step-panel"
+               aria-labelledby="titulo-step-2"
+               hidden>
+        <h2 id="titulo-step-2" class="text-lg font-bold text-ink mb-1">
+          Contato e endereço
+        </h2>
+        <p class="text-aux text-graphite mb-5">
+          Precisamos dos seus dados de contato para garantir a segurança da conta.
+        </p>
+
+        <form id="form-step-2" novalidate class="space-y-5">
+
+          <!-- E-mail -->
+          <div>
+            <label for="email" class="field-label">
+              E-mail <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   required
+                   autocomplete="email"
+                   aria-required="true"
+                   aria-describedby="email-ajuda email-erro"
+                   aria-invalid="false"
+                   class="field-input"
+                   placeholder="seu@email.com">
+            <p id="email-ajuda" class="text-help mt-1">
+              Enviaremos a confirmação do cadastro para este endereço.
+            </p>
+            <div id="email-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>⚠️ Digite um e-mail válido no formato nome@dominio.com.</span>
+            </div>
+          </div>
+
+          <!-- Telefone principal -->
+          <div>
+            <label for="tel1" class="field-label">
+              Telefone principal <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="tel"
+                   id="tel1"
+                   name="tel1"
+                   required
+                   autocomplete="tel"
+                   inputmode="numeric"
+                   maxlength="15"
+                   aria-required="true"
+                   aria-describedby="tel1-ajuda"
+                   class="field-input"
+                   placeholder="(00) 0000-0000"
+                   oninput="mascaraTelefone(this, false)">
+            <p id="tel1-ajuda" class="text-help mt-1">
+              Telefone fixo ou celular para contato em horário comercial.
+            </p>
+            <div id="tel1-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>⚠️ Digite um telefone válido com DDD no formato (00) 0000-0000.</span>
+            </div>
+          </div>
+
+          <!-- Telefone secundário (opcional) -->
+          <div>
+            <label for="tel2" class="field-label">
+              Telefone secundário <span class="text-help font-normal">(opcional)</span>
+            </label>
+            <input type="tel"
+                   id="tel2"
+                   name="tel2"
+                   autocomplete="tel"
+                   inputmode="numeric"
+                   maxlength="15"
+                   aria-describedby="tel2-ajuda"
+                   class="field-input"
+                   placeholder="(00) 90000-0000"
+                   oninput="mascaraTelefone(this, true)">
+            <p id="tel2-ajuda" class="text-help mt-1">
+              Celular para contato alternativo (WhatsApp, se houver).
+            </p>
+          </div>
+
+          <!-- CEP -->
+          <div>
+            <label for="cep" class="field-label">
+              CEP <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="cep"
+                   name="cep"
+                   required
+                   inputmode="numeric"
+                   maxlength="9"
+                   autocomplete="postal-code"
+                   aria-required="true"
+                   aria-describedby="cep-ajuda"
+                   class="field-input"
+                   placeholder="00000-000"
+                   oninput="mascaraCep(this)">
+            <p id="cep-ajuda" class="text-help mt-1">
+              Informe o CEP do seu endereço residencial.
+            </p>
+            <div id="cep-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>⚠️ Digite um CEP válido com 8 números no formato 00000-000.</span>
+            </div>
+          </div>
+
+          <!-- Endereço -->
+          <div>
+            <label for="endereco" class="field-label">
+              Endereço completo <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="endereco"
+                   name="endereco"
+                   required
+                   autocomplete="street-address"
+                   aria-required="true"
+                   aria-describedby="endereco-ajuda"
+                   class="field-input"
+                   placeholder="Rua, número, complemento">
+            <p id="endereco-ajuda" class="text-help mt-1">
+              Rua, número e complemento do seu endereço.
+            </p>
+            <div id="endereco-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, informe seu endereço completo.</span>
+            </div>
+          </div>
+
+          <!-- Bairro -->
+          <div>
+            <label for="bairro" class="field-label">
+              Bairro <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input type="text"
+                   id="bairro"
+                   name="bairro"
+                   required
+                   autocomplete="address-level2"
+                   aria-required="true"
+                   class="field-input"
+                   placeholder="Seu bairro">
+            <div id="bairro-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, informe seu bairro.</span>
+            </div>
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button type="button"
+                    class="btn-secondary flex-1 touch-target"
+                    onclick="voltarEtapa(1)"
+                    aria-label="Voltar para a etapa de dados pessoais">
+              VOLTAR
+            </button>
+            <button type="submit"
+                    class="btn-primary flex-1 touch-target"
+                    form="form-step-2">
+              CONTINUAR CADASTRO
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============================================================
+           Etapa 3 — Revisão e Confirmação
+           ============================================================ -->
+      <section id="step-3"
+               class="step-panel"
+               aria-labelledby="titulo-step-3"
+               hidden>
+        <h2 id="titulo-step-3" class="text-lg font-bold text-ink mb-1">
+          Revisão e confirmação
+        </h2>
+        <p class="text-aux text-graphite mb-5">
+          Confira seus dados antes de finalizar. Você ainda pode voltar para corrigir.
+        </p>
+
+        <form id="form-step-3" novalidate class="space-y-5">
+
+          <!-- Perfil de investidor -->
+          <div>
+            <label for="perfil" class="field-label" id="perfil-label">
+              Perfil de investidor <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <select id="perfil"
+                    name="perfil"
+                    required
+                    aria-required="true"
+                    aria-describedby="perfil-ajuda"
+                    class="field-input">
+              <option value="">Selecione uma opção...</option>
+              <option value="conservador">Conservador — priorizo segurança e baixo risco</option>
+              <option value="moderado">Moderado — aceito algum risco por melhores retornos</option>
+              <option value="arrojado">Arrojado — busco maior retorno, aceito maior risco</option>
+            </select>
+            <p id="perfil-ajuda" class="text-help mt-1">
+              Escolha o perfil que mais combina com você. Você pode mudar depois.
+            </p>
+            <div id="perfil-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>Por favor, selecione um perfil de investidor.</span>
+            </div>
+          </div>
+
+          <!-- Resumo dos dados (preenchido via JS) -->
+          <div class="bg-white border-2 border-gray-200 rounded-xl p-4"
+               role="region"
+               aria-labelledby="resumo-titulo">
+            <h3 id="resumo-titulo" class="text-base font-bold text-ink mb-3">
+              Resumo do seu cadastro
+            </h3>
+            <dl class="space-y-2 text-body text-graphite">
+              <div>
+                <dt class="font-semibold text-ink">Nome:</dt>
+                <dd id="res-nome">—</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-ink">CPF:</dt>
+                <dd id="res-cpf">—</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-ink">E-mail:</dt>
+                <dd id="res-email">—</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-ink">Telefone:</dt>
+                <dd id="res-tel">—</dd>
+              </div>
+              <div>
+                <dt class="font-semibold text-ink">Endereço:</dt>
+                <dd id="res-endereco">—</dd>
+              </div>
+            </dl>
+            <button type="button"
+                    class="mt-3 text-aux font-semibold text-blue-700 underline underline-offset-2 touch-target inline-flex items-center"
+                    onclick="voltarEtapa(1)">
+              Editar dados pessoais
+            </button>
+          </div>
+
+          <!-- Termos de uso — checkbox grande + rótulo clicável -->
+          <div class="bg-white border-2 border-gray-200 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+              <input type="checkbox"
+                     id="termos"
+                     name="termos"
+                     required
+                     aria-required="true"
+                     aria-describedby="termos-erro"
+                     class="checkbox-large mt-1">
+              <label for="termos" class="text-body text-graphite cursor-pointer leading-snug">
+                Li e concordo com os
+                <a href="#termos-link"
+                   class="text-blue-700 font-semibold underline underline-offset-2"
+                   aria-describedby="termos-ajuda">
+                  Termos de Uso
+                </a>
+                e a
+                <a href="#privacidade-link"
+                   class="text-blue-700 font-semibold underline underline-offset-2">
+                  Política de Privacidade
+                </a>
+                do BancoAcessível.
+              </label>
+            </div>
+            <p id="termos-ajuda" class="text-help mt-2">
+              Seus dados serão usados apenas para abertura e segurança da conta. Não compartilhamos dados com terceiros para marketing.
+            </p>
+            <div id="termos-erro"
+                 class="error-message"
+                 role="alert"
+                 aria-live="polite"
+                 style="display:none;">
+              <span class="error-icon" aria-hidden="true">⚠️</span>
+              <span>⚠️ É necessário aceitar os termos para concluir o cadastro.</span>
+            </div>
+          </div>
+
+          <!-- Tarifas em texto legível (sem jargão, sem armadilha) -->
+          <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+            <h3 class="text-base font-bold text-ink mb-2">Informações transparentes sobre tarifas</h3>
+            <ul class="text-aux text-graphite space-y-1 list-disc pl-5">
+              <li>Manutenção da conta: <strong>gratuita</strong> nos primeiros 30 dias.</li>
+              <li>Após 30 dias: tarifa mensal de <strong>R$ 0,00</strong> (conta digital sem custo).</li>
+              <li>Transferências: <strong>gratuitas</strong> até o limite mensal de 8 operações.</li>
+              <li>Saques em caixas eletrônicos BancoAcessível: <strong>gratuitos</strong>.</li>
+            </ul>
+            <p class="text-help mt-2">
+              Você pode consultar o regulamento completo a qualquer momento na sua conta.
+            </p>
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button type="button"
+                    class="btn-secondary flex-1 touch-target"
+                    onclick="voltarEtapa(2)"
+                    aria-label="Voltar para a etapa de contato e endereço">
+              VOLTAR
+            </button>
+            <button type="submit"
+                        class="btn-primary flex-1 touch-target"
+                        form="form-step-3">
+              FINALIZAR CADASTRO
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============================================================
+           Tela de sucesso (após finalizar)
+           ============================================================ -->
+      <section id="step-success"
+               class="step-panel"
+               aria-labelledby="titulo-sucesso"
+               hidden>
+        <div class="success-banner rounded-xl p-6 text-center">
+          <div class="text-5xl mb-3" aria-hidden="true">✅</div>
+          <h2 id="titulo-sucesso" class="text-xl font-bold mb-2">
+            Cadastro concluído com sucesso!
+          </h2>
+          <p class="text-aux text-graphite mb-5">
+            Enviamos um e-mail de confirmação para <strong id="email-confirmado">seu@email.com</strong>.
+            Verifique sua caixa de entrada para ativar a conta.
+          </p>
+          <button type="button"
+                  class="btn-primary w-full touch-target"
+                  onclick="window.location.href='BancoAcessivel-cadastro.html'">
+            Acessar minha conta
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ============================================================
+         Rodapé semântico
+         ============================================================ -->
+    <footer role="contentinfo" class="px-5 py-6 border-t border-gray-200 mt-6">
+      <p class="text-aux text-graphite text-center leading-relaxed">
+        BancoAcessível S.A. — CNPJ 00.000.000/0001-00.
+        Esta página é um <strong>estudo de caso educacional</strong> (gabarito) para auditoria de acessibilidade.
+      </p>
+      <p class="text-aux text-graphite text-center mt-2">
+        Em caso de dificuldades, ligue para a
+        <a href="tel:0800123456" class="text-blue-700 font-semibold underline underline-offset-2">
+          Central de Atendimento: 0800 123 456
+        </a>
+      </p>
+    </footer>
+
+  </div>
+
+<script>
+  /* ============================================================
+     Estado do fluxo (etapas)
+     ============================================================ */
+  const dadosCadastro = {
+    nome: '', cpf: '', rg: '', mae: '', renda: '',
+    email: '', tel1: '', tel2: '', cep: '', endereco: '', bairro: '', perfil: ''
+  };
+
+  const stepLabels = ['Dados pessoais', 'Contato e endereço', 'Revisão e confirmação'];
+
+  function mostrarEtapa(numero) {
+    document.querySelectorAll('.step-panel').forEach(el => {
+      el.classList.remove('active');
+      el.setAttribute('hidden', '');
+    });
+    const alvo = document.getElementById('step-' + numero);
+    if (alvo) {
+      alvo.classList.add('active');
+      alvo.removeAttribute('hidden');
+      // Move o foco para o título da etapa (acessibilidade de teclado)
+      const titulo = alvo.querySelector('h2');
+      if (titulo) {
+        titulo.setAttribute('tabindex', '-1');
+        titulo.focus();
+      }
+    }
+    atualizarProgresso(numero);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function voltarEtapa(numero) {
+    mostrarEtapa(numero);
+  }
+
+  function atualizarProgresso(numero) {
+    document.getElementById('stepNumber').textContent = numero;
+    document.getElementById('stepLabel').textContent = stepLabels[numero - 1];
+    document.getElementById('progressFill').style.width = (numero / 3 * 100) + '%';
+    const prog = document.querySelector('[role="progressbar"]');
+    if (prog) prog.setAttribute('aria-valuenow', numero);
+
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById('dot-' + i);
+      if (i === numero) {
+        dot.classList.remove('text-gray-400');
+        dot.classList.add('font-semibold', 'text-blue-700');
+      } else if (i < numero) {
+        dot.classList.remove('text-gray-400');
+        dot.classList.add('text-graphite');
+      } else {
+        dot.classList.add('text-gray-400');
+        dot.classList.remove('font-semibold', 'text-blue-700', 'text-graphite');
+      }
+    }
+  }
+
+  /* ============================================================
+     Validação com triplo indicador (Borda + Ícone + Mensagem)
+     ============================================================ */
+  function mostrarErro(campoId, mostrar, mensagem) {
+    const campo = document.getElementById(campoId);
+    const erroEl = document.getElementById(campoId + '-erro');
+    if (!campo || !erroEl) return;
+
+    if (mostrar) {
+      campo.classList.add('is-invalid');
+      campo.setAttribute('aria-invalid', 'true');
+      erroEl.style.display = 'flex';
+      if (mensagem) {
+        const span = erroEl.querySelector('span:last-child');
+        if (span) span.textContent = mensagem;
+      }
+    } else {
+      campo.classList.remove('is-invalid');
+      campo.setAttribute('aria-invalid', 'false');
+      erroEl.style.display = 'none';
+    }
+  }
+
+  function validarCpf(valor) {
+    const limpo = valor.replace(/\D/g, '');
+    return limpo.length === 11;
+  }
+
+  function validarEmail(valor) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(valor.trim());
+  }
+
+  function validarTelefone(valor) {
+    const limpo = valor.replace(/\D/g, '');
+    return limpo.length === 10 || limpo.length === 11;
+  }
+
+  function validarCep(valor) {
+    const limpo = valor.replace(/\D/g, '');
+    return limpo.length === 8;
+  }
+
+  /* ============================================================
+     Máscaras (sem prejudicar acessibilidade)
+     ============================================================ */
+  function mascaraCpf(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1}).*/, '$1.$2.$3-$4');
+    else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3}).*/, '$1.$2.$3');
+    else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3}).*/, '$1.$2');
+    input.value = v;
+  }
+
+  function mascaraCep(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length > 5) v = v.replace(/(\d{5})(\d{1,3}).*/, '$1-$2');
+    input.value = v;
+  }
+
+  function mascaraTelefone(input, isCelular) {
+    let v = input.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10)      v = v.replace(/(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+    else if (v.length > 6)  v = v.replace(/(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+    else if (v.length > 2)  v = v.replace(/(\d{2})(\d{0,5}).*/, '($1) $2');
+    else if (v.length > 0)  v = v.replace(/(\d{0,2}).*/, '($1');
+    input.value = v;
+  }
+
+  /* ============================================================
+     Envio de cada etapa
+     ============================================================ */
+  document.getElementById('form-step-1').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let ok = true;
+
+    const nome = document.getElementById('nome').value.trim();
+    if (!nome || nome.length < 3) { mostrarErro('nome', true); ok = false; }
+    else { mostrarErro('nome', false); }
+
+    const cpf = document.getElementById('cpf').value;
+    if (!validarCpf(cpf)) { mostrarErro('cpf', true, '⚠️ Digite um CPF válido com 11 números no formato 000.000.000-00.'); ok = false; }
+    else { mostrarErro('cpf', false); }
+
+    const rg = document.getElementById('rg').value.trim();
+    if (!rg) { mostrarErro('rg', true); ok = false; }
+    else { mostrarErro('rg', false); }
+
+    const mae = document.getElementById('mae').value.trim();
+    if (!mae || mae.length < 3) { mostrarErro('mae', true); ok = false; }
+    else { mostrarErro('mae', false); }
+
+    const renda = document.getElementById('renda').value;
+    if (!renda || parseFloat(renda) < 0) { mostrarErro('renda', true); ok = false; }
+    else { mostrarErro('renda', false); }
+
+    if (ok) {
+      dadosCadastro.nome = nome;
+      dadosCadastro.cpf = cpf;
+      dadosCadastro.rg = rg;
+      dadosCadastro.mae = mae;
+      dadosCadastro.renda = renda;
+      mostrarEtapa(2);
+    } else {
+      // Foca no primeiro campo com erro
+      const primeiroErro = document.querySelector('.is-invalid');
+      if (primeiroErro) primeiroErro.focus();
+    }
+  });
+
+  document.getElementById('form-step-2').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let ok = true;
+
+    const email = document.getElementById('email').value.trim();
+    if (!validarEmail(email)) { mostrarErro('email', true); ok = false; }
+    else { mostrarErro('email', false); }
+
+    const tel1 = document.getElementById('tel1').value;
+    if (!validarTelefone(tel1)) { mostrarErro('tel1', true, '⚠️ Digite um telefone válido com DDD no formato (00) 0000-0000.'); ok = false; }
+    else { mostrarErro('tel1', false); }
+
+    const cep = document.getElementById('cep').value;
+    if (!validarCep(cep)) { mostrarErro('cep', true, '⚠️ Digite um CEP válido com 8 números no formato 00000-000.'); ok = false; }
+    else { mostrarErro('cep', false); }
+
+    const endereco = document.getElementById('endereco').value.trim();
+    if (!endereco) { mostrarErro('endereco', true); ok = false; }
+    else { mostrarErro('endereco', false); }
+
+    const bairro = document.getElementById('bairro').value.trim();
+    if (!bairro) { mostrarErro('bairro', true); ok = false; }
+    else { mostrarErro('bairro', false); }
+
+    if (ok) {
+      dadosCadastro.email = email;
+      dadosCadastro.tel1 = tel1;
+      dadosCadastro.tel2 = document.getElementById('tel2').value;
+      dadosCadastro.cep = cep;
+      dadosCadastro.endereco = endereco;
+      dadosCadastro.bairro = bairro;
+      atualizarResumo();
+      mostrarEtapa(3);
+    } else {
+      const primeiroErro = document.querySelector('.is-invalid');
+      if (primeiroErro) primeiroErro.focus();
+    }
+  });
+
+  document.getElementById('form-step-3').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let ok = true;
+
+    const perfil = document.getElementById('perfil').value;
+    if (!perfil) { mostrarErro('perfil', true); ok = false; }
+    else { mostrarErro('perfil', false); }
+
+    const termos = document.getElementById('termos').checked;
+    if (!termos) {
+      document.getElementById('termos-erro').style.display = 'flex';
+      ok = false;
+    } else {
+      document.getElementById('termos-erro').style.display = 'none';
+    }
+
+    if (ok) {
+      dadosCadastro.perfil = perfil;
+      document.getElementById('email-confirmado').textContent = dadosCadastro.email;
+      // Mostra tela de sucesso
+      document.querySelectorAll('.step-panel').forEach(el => {
+        el.classList.remove('active');
+        el.setAttribute('hidden', '');
+      });
+      const sucesso = document.getElementById('step-success');
+      sucesso.classList.add('active');
+      sucesso.removeAttribute('hidden');
+      const titulo = sucesso.querySelector('h2');
+      if (titulo) {
+        titulo.setAttribute('tabindex', '-1');
+        titulo.focus();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const primeiroErro = document.querySelector('.is-invalid');
+      if (primeiroErro) primeiroErro.focus();
+    }
+  });
+
+  /* ============================================================
+     Validação em tempo real (saída do campo)
+     ============================================================ */
+  document.getElementById('cpf').addEventListener('blur', function() {
+    if (this.value && !validarCpf(this.value)) {
+      mostrarErro('cpf', true, '⚠️ Digite um CPF válido com 11 números no formato 000.000.000-00.');
+    }
+  });
+
+  document.getElementById('email').addEventListener('blur', function() {
+    if (this.value && !validarEmail(this.value)) {
+      mostrarErro('email', true, '⚠️ Digite um e-mail válido no formato nome@dominio.com.');
+    }
+  });
+
+  /* ============================================================
+     Atualiza resumo na etapa 3
+     ============================================================ */
+  function atualizarResumo() {
+    document.getElementById('res-nome').textContent = dadosCadastro.nome || '—';
+    document.getElementById('res-cpf').textContent = dadosCadastro.cpf || '—';
+    document.getElementById('res-email').textContent = dadosCadastro.email || '—';
+    document.getElementById('res-tel').textContent = dadosCadastro.tel1 || '—';
+    document.getElementById('res-endereco').textContent =
+      `${dadosCadastro.endereco || '—'} - ${dadosCadastro.bairro || '—'} - CEP ${dadosCadastro.cep || '—'}`;
+  }
+
+  /* ============================================================
+     Inicialização
+     ============================================================ */
+  mostrarEtapa(1);
+</script>
+
+</body>
+</html>
